@@ -1,0 +1,44 @@
+{
+  "name": "grunt-acetate",
+  "description": "Grunt plugin for the Acetate static site builter.",
+  "version": "0.0.2",
+  "homepage": "https://github.com/patricklocal/grunt-acetate",
+  "author": {
+    "name": "Patrick Arlt",
+    "email": "patrick.arlt@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/patricklocal/grunt-acetate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/patricklocal/grunt-acetate/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/patricklocal/grunt-acetate/blob/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "^0.9.2",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-nodeunit": "^0.3.3",
+    "grunt": "~0.4.5"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.5"
+  },
+  "keywords": [
+    "gruntplugin"
+  ],
+  "dependencies": {
+    "lodash": "~2.4.1"
+  }
+}
