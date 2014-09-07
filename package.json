@@ -1,7 +1,7 @@
 {
   "name": "grunt-acetate",
   "description": "Grunt plugin for the Acetate static site builter.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/patricklocal/grunt-acetate",
   "author": {
     "name": "Patrick Arlt",
@@ -39,6 +39,7 @@
     "gruntplugin"
   ],
   "dependencies": {
+    "acetate": "~0.0.3",
     "lodash": "~2.4.1"
   }
 }
