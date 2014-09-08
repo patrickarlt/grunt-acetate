@@ -16,29 +16,44 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('acetate', 'Grunt plugin for the Acetate static site builter.', function() {
     var done = this.async();
-
+    var data = this.data;
     var options = this.options({
-      watch: false
+      keepalive: false,
+      server: false,
+      watch: false,
+      port: 3000
     });
 
-    var data = this.data;
+    console.log(options);
 
-    Acetate.init(function(error, acetate){
-      // override any args in the acetate args with the grunt args object
-      _.defaults(acetate.args, data.args);
-
-      acetate.loadConfig(path.join(process.cwd(), data.config));
-
-      // override any options in the acetate options with the grunt options
-      _.defaults(acetate.options, options);
-
+    function build() {
       acetate.build(function(){
-        if(data.watch){
-          acetate.watcher.start();
-        } else {
+        console.log(options.keepalive);
+        if(!options.keepalive) {
           done();
         }
       });
+    }
+
+    var acetate = new Acetate(path.join(process.cwd(), data.config));
+
+    _.defaults(acetate.args, data.args);
+    _.defaults(acetate.options, options);
+
+    if(options.watch){
+      acetate.watcher.start();
+    }
+
+    if(options.server && options.port){
+      acetate.server.start(options.port);
+    }
+
+    acetate.load(function(){
+      if(options.clean){
+        acetate.clean(build);
+      } else {
+        build()
+      }
     });
   });
 };
