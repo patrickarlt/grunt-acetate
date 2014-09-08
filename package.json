@@ -39,7 +39,6 @@
     "gruntplugin"
   ],
   "dependencies": {
-    "acetate": "~0.0.3",
     "lodash": "~2.4.1"
   }
 }
