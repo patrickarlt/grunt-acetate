@@ -33,7 +33,7 @@ module.exports = function(grunt) {
       _.defaults(acetate.options, options);
 
       acetate.build(function(){
-        if(options.watch){
+        if(data.watch){
           acetate.watcher.start();
         } else {
           done();

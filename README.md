@@ -25,11 +25,8 @@ In your project's Gruntfile, add a section named `acetate` to the data object pa
 ```js
 grunt.initConfig({
   acetate: {
-    options: {
-      // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
+    build: {
+      config: 'acetate.conf.js'
     },
   },
 });
@@ -37,53 +34,77 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
-
-A string value that is used to do something with whatever.
-
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
-
-A string value that is used to do something else with whatever else.
+@TODO
 
 ### Usage Examples
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+#### Simple
+
+A simple example that will build your entire project on `grunt acetate`.
 
 ```js
 grunt.initConfig({
   acetate: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
+    build: {
+      config: 'acetate.conf.js'
     },
-  },
+  }
 });
 ```
 
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+#### Rebuild Project When Files Change
+
+Integrate with the grunt-contrib-watch plugin to watch files and rebuild the whole Acetate project when files change.
 
 ```js
 grunt.initConfig({
   acetate: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
+    build: {
+      config: 'acetate.conf.js'
     },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+  },
+  watch: {
+    acetate: {
+      files: ['src/**/*'],
+      tasks: ['acetate:build'],
+    }
   },
 });
 ```
+
+#### Watching and Rebuilding Single Files
+
+This example shows using the Acetate watcher with `grunt-concurrent`. This example is more robust and will only rebuild the files that have changed and is more efficent for development.
+
+```js
+grunt.initConfig({
+  acetate: {
+    build: {
+      config: 'acetate.conf.js'
+    },
+    watch: {
+      config: 'acetate.conf.js',
+      watch: true
+    }
+  },
+  concurrent: {
+    dev: ['acetate:watch'],
+  }
+});
+```
+
+#### Overriding Config Options
+
+@TODO
+
+#### Passing Arguments
+
+@TODO
 
 ## Contributing
+
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+
 _(Nothing yet)_
