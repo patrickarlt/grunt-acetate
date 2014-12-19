@@ -12,12 +12,21 @@ var Acetate = require('acetate');
 var path = require('path');
 var _ = require('lodash');
 var gaze = require('gaze');
+var util = require('util');
 
 module.exports = function(grunt) {
+
+  var logHeader = false;
+
+  grunt.event.on('watch', function() {
+    grunt.log.writeln();
+    logHeader = true;
+  });
 
   grunt.registerMultiTask('acetate', 'Grunt plugin for the Acetate static site builter.', function() {
     var done = this.async();
     var data = this.data || grunt.config('acetate');
+    var target = this.target;
     var configPath = path.join(process.cwd(), data.config);
     var options = this.options({
       keepalive: false,
@@ -26,12 +35,13 @@ module.exports = function(grunt) {
       port: 3000,
       host: 'localhost',
       findPort: true,
-      logLevel: 'verbose'
+      logLevel: 'info'
     });
 
     var acetate;
 
     function build() {
+      logHeader = true;
       acetate.build(function(){
         if(!options.keepalive) {
           done();
@@ -43,7 +53,15 @@ module.exports = function(grunt) {
       acetate = new Acetate(configPath);
 
       _.defaults(acetate.args, data.args);
-      _.defaults(acetate.options, options);
+
+      acetate.log.on('log', function(e){
+        if(e.show && logHeader){
+          logHeader = false;
+          grunt.log.header('Task "acetate:"'+target+'" running');
+        }
+      });
+
+      acetate.log.logLevel = options.logLevel;
 
       if(options.watch){
         acetate.watcher.start();
@@ -61,6 +79,7 @@ module.exports = function(grunt) {
         }
       });
     }
+
     if(options.watch){
       gaze(data.config, function(error, watcher){
 
