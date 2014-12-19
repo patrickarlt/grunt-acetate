@@ -61,7 +61,7 @@ module.exports = function(grunt) {
         }
       });
 
-      acetate.log.logLevel = options.logLevel;
+      acetate.log.level = options.logLevel;
 
       if(options.watch){
         acetate.watcher.start();
