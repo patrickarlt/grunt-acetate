@@ -29,7 +29,7 @@
   },
   "peerDependencies": {
     "grunt": "~0.4.5",
-    "acetate": ">=0.0.15"
+    "acetate": ">=0.0.16"
   },
   "keywords": [
     "gruntplugin"
