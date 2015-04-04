@@ -8,98 +8,64 @@
 
 'use strict';
 
-var Acetate = require('acetate');
+var acetate = require('acetate');
 var path = require('path');
 var _ = require('lodash');
-var gaze = require('gaze');
-var util = require('util');
+var chokidar = require('chokidar');
 
 module.exports = function(grunt) {
 
-  var logHeader = false;
-
-  grunt.event.on('watch', function() {
-    grunt.log.writeln();
-    logHeader = true;
-  });
-
   grunt.registerMultiTask('acetate', 'Grunt plugin for the Acetate static site builter.', function() {
     var done = this.async();
-    var data = this.data || grunt.config('acetate');
     var target = this.target;
-    var configPath = path.join(process.cwd(), data.config);
+    var data = this.data || grunt.config('acetate');
+    var site;
     var options = this.options({
       keepalive: false,
       server: false,
-      watch: false,
+      watcher: false,
       port: 3000,
       host: 'localhost',
       findPort: true,
-      logLevel: 'info'
+      open: false,
+      clean: false,
+      log: 'info',
     });
 
-    var acetate;
+    options.config = path.join(process.cwd(), data.config);
 
-    function build() {
+   var logHeader = false;
+
+    grunt.event.on('watch', function() {
+      grunt.log.writeln();
       logHeader = true;
-      acetate.build(function(){
+    });
+
+    function run(){
+      logHeader = true;
+
+      site = acetate(options, function(error){
         if(!options.keepalive) {
           done();
         }
-      });
-    }
 
-    function run() {
-      acetate = new Acetate(configPath);
-
-      _.defaults(acetate.args, data.args);
-
-      acetate.log.on('log', function(e){
-        if(e.show && logHeader){
-          logHeader = false;
-          grunt.log.header('Task "acetate:"'+target+'" running');
-        }
-      });
-
-      acetate.log.level = options.logLevel;
-
-      if(options.watch){
-        acetate.watcher.start();
-      }
-
-      if(options.server && options.port){
-        acetate.server.start(options.host, options.port, options.findPort);
-      }
-
-      acetate.load(function(){
-        if(options.clean){
-          acetate.clean(build);
-        } else {
-          build();
-        }
-      });
-    }
-
-    if(options.watch){
-      gaze(data.config, function(error, watcher){
-
-        // whenever it chagnes
-        watcher.on('changed', function() {
-
-          // stop the server if we were running it
-          if(options.server && options.port){
-            acetate.server.stop();
+        site.log.on('log', function(e){
+          if(e.show && logHeader){
+            logHeader = false;
+            grunt.log.header('Task "acetate:'+target+'" running');
           }
-
-          // stop the watcher if we were running it
-          if(options.watch){
-            acetate.watcher.stop();
-          }
-
-          // rerun everything
-          run();
-
         });
+      });
+    }
+
+    if (options.server || options.watcher) {
+      chokidar.watch(options.config, {
+        ignoreInitial: true
+      }).on('change', function(){
+        site.log.success('watcher', 'config file changed, rebuilding site');
+        site.watcher.stop();
+        site.server.stop();
+        run();
       });
     }
 
