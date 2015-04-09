@@ -34,18 +34,18 @@ module.exports = function(grunt) {
 
     options.config = path.join(process.cwd(), data.config);
 
-   var logHeader = false;
+    var logHeader = false;
 
     grunt.event.on('watch', function() {
       grunt.log.writeln();
       logHeader = true;
     });
 
-    function run(){
+    function run(firstRun){
       logHeader = true;
 
       site = acetate(options, function(error){
-        if(!options.keepalive) {
+        if(!options.keepalive && firstRun) {
           done();
         }
 
@@ -69,6 +69,6 @@ module.exports = function(grunt) {
       });
     }
 
-    run();
+    run(true);
   });
 };

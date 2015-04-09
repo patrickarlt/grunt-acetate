@@ -1,25 +1,17 @@
 {
   "name": "grunt-acetate",
   "description": "Grunt plugin for the Acetate static site builter.",
-  "version": "0.0.10",
-  "homepage": "https://github.com/patricklocal/grunt-acetate",
+  "version": "0.0.11",
   "author": {
     "name": "Patrick Arlt",
     "email": "patrick.arlt@gmail.com"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/patricklocal/grunt-acetate.git"
-  },
   "bugs": {
     "url": "https://github.com/patricklocal/grunt-acetate/issues"
   },
-  "license": "MIT",
-  "engines": {
-    "node": ">= 0.8.0"
-  },
-  "scripts": {
-    "test": "grunt test"
+  "dependencies": {
+    "chokidar": "~1.0.0",
+    "lodash": "~2.4.1"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
@@ -27,15 +19,23 @@
     "grunt-contrib-jshint": "^0.9.2",
     "grunt-contrib-nodeunit": "^0.3.3"
   },
-  "peerDependencies": {
-    "grunt": "~0.4.5",
-    "acetate": ">=0.0.16"
+  "engines": {
+    "node": ">= 0.8.0"
   },
+  "homepage": "https://github.com/patricklocal/grunt-acetate",
   "keywords": [
     "gruntplugin"
   ],
-  "dependencies": {
-    "chokidar": "^1.0.0-rc5",
-    "lodash": "~2.4.1"
+  "license": "MIT",
+  "peerDependencies": {
+    "acetate": "~0.0.16",
+    "grunt": "~0.4.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/patricklocal/grunt-acetate.git"
+  },
+  "scripts": {
+    "test": "grunt test"
   }
 }
