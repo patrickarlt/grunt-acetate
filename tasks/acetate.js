@@ -12,6 +12,7 @@ var acetate = require('acetate');
 var path = require('path');
 var _ = require('lodash');
 var chokidar = require('chokidar');
+var opener = require('opener');
 
 module.exports = function(grunt) {
 
@@ -30,6 +31,7 @@ module.exports = function(grunt) {
       open: false,
       clean: false,
       log: 'info',
+      args: false
     });
 
     options.config = path.join(process.cwd(), data.config);
@@ -45,6 +47,11 @@ module.exports = function(grunt) {
       logHeader = true;
 
       site = acetate(options, function(error){
+        if(firstRun && options.open && options.server) {
+          site.log.success('server', 'opening %s:%s', options.host, site.server.foundPort);
+          opener('http://' + options.host + ':' + site.server.foundPort);
+        }
+
         if(!options.keepalive && firstRun) {
           done();
         }
