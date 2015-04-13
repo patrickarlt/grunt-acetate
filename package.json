@@ -1,7 +1,7 @@
 {
   "name": "grunt-acetate",
   "description": "Grunt plugin for the Acetate static site builter.",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "author": {
     "name": "Patrick Arlt",
     "email": "patrick.arlt@gmail.com"
@@ -29,7 +29,7 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "acetate": "~0.0.24",
+    "acetate": "~0.0.27",
     "grunt": "~0.4.5"
   },
   "repository": {

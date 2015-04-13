@@ -22,6 +22,8 @@ module.exports = function(grunt) {
     var data = this.data || grunt.config('acetate');
     var site;
     var options = this.options({
+      config: 'acetate.conf.js',
+      root: process.cwd(),
       keepalive: false,
       server: false,
       watcher: false,
@@ -55,8 +57,8 @@ module.exports = function(grunt) {
         if(!options.keepalive && firstRun) {
           done();
         }
-
-        site.log.on('log', function(e){
+        console.log(site);
+        site.on('log', function(e){
           if(e.show && logHeader){
             logHeader = false;
             grunt.log.header('Task "acetate:'+target+'" running');
