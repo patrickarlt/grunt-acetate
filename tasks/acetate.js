@@ -36,8 +36,6 @@ module.exports = function(grunt) {
       args: false
     });
 
-    options.config = path.join(process.cwd(), data.config);
-
     var logHeader = false;
 
     grunt.event.on('watch', function() {
@@ -57,7 +55,7 @@ module.exports = function(grunt) {
         if(!options.keepalive && firstRun) {
           done();
         }
-        console.log(site);
+
         site.on('log', function(e){
           if(e.show && logHeader){
             logHeader = false;
