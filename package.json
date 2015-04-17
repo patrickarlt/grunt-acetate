@@ -34,7 +34,7 @@
     "url": "git://github.com/patricklocal/grunt-acetate.git"
   },
   "scripts": {
-    "release": "npm release && gh-release",
+    "release": "npm publish && gh-release",
     "test": "grunt test"
   }
 }
