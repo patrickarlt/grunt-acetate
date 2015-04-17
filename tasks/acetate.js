@@ -21,6 +21,8 @@ module.exports = function (grunt) {
     var site;
     var options = this.options({
       config: 'acetate.conf.js',
+      src: 'src',
+      dest: 'build',
       root: process.cwd(),
       keepalive: false,
       server: false,
