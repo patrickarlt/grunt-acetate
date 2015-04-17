@@ -31,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/patricklocal/grunt-acetate.git"
+    "url": "git@github.com:patrickarlt/grunt-acetate.git"
   },
   "scripts": {
     "release": "npm publish && gh-release",
