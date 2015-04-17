@@ -77,6 +77,7 @@ module.exports = function (grunt) {
         site.watcher.stop();
         site.server.stop();
         site.removeAllListeners('log');
+
         createSite();
       });
     }
