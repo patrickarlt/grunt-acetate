@@ -10,16 +10,14 @@
 
 var acetate = require('acetate');
 var path = require('path');
-var _ = require('lodash');
 var chokidar = require('chokidar');
 var opener = require('opener');
 
-module.exports = function(grunt) {
-
-  grunt.registerMultiTask('acetate', 'Grunt plugin for the Acetate static site builter.', function() {
+module.exports = function (grunt) {
+  grunt.registerMultiTask('acetate', 'Grunt plugin for Acetate.', function () {
     var done = this.async();
     var target = this.target;
-    var data = this.data || grunt.config('acetate');
+    var logHeader = false;
     var site;
     var options = this.options({
       config: 'acetate.conf.js',
@@ -36,46 +34,49 @@ module.exports = function(grunt) {
       args: false
     });
 
-    var logHeader = false;
+    function createSite () {
+      site = acetate(options);
+      site.on('log', function (e) {
+        if (e.show && logHeader) {
+          logHeader = false;
+          grunt.log.header('Task "acetate:' + target + '" running');
+        }
+      });
+    }
 
-    grunt.event.on('watch', function() {
+    createSite();
+
+    grunt.event.on('watch', function () {
       grunt.log.writeln();
       logHeader = true;
     });
 
-    function run(firstRun){
-      logHeader = true;
-
-      site = acetate(options, function(error){
-        if(firstRun && options.open && options.server) {
-          site.log.success('server', 'opening %s:%s', options.host, site.server.foundPort);
-          opener('http://' + options.host + ':' + site.server.foundPort);
-        }
-
-        if(!options.keepalive && firstRun) {
-          done();
-        }
-
-        site.on('log', function(e){
-          if(e.show && logHeader){
-            logHeader = false;
-            grunt.log.header('Task "acetate:'+target+'" running');
-          }
-        });
+    // if building end the task once we are done
+    if (!options.keepalive) {
+      site.once('build', function (e) {
+        done();
       });
     }
 
+    // if serving open the site once we are done building
+    if (options.server && options.open) {
+      site.once('server:start', function (e) {
+        site.log.success('server', 'opening %s:%s', e.host, e.port);
+        opener('http://' + e.host + ':' + e.port);
+      });
+    }
+
+    // if watching or serving watch the config file and rebuild the whole site
     if (options.server || options.watcher) {
-      chokidar.watch(options.config, {
+      chokidar.watch(path.join(options.root, options.config), {
         ignoreInitial: true
-      }).on('change', function(){
-        site.log.success('watcher', 'config file changed, rebuilding site');
+      }).on('change', function () {
+        site.log.info('watcher', 'config file changed, rebuilding site');
         site.watcher.stop();
         site.server.stop();
-        run();
+        site.removeAllListeners('log');
+        createSite();
       });
     }
-
-    run(true);
   });
 };
