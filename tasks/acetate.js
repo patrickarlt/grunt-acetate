@@ -20,24 +20,16 @@ module.exports = function (grunt) {
     var logHeader = false;
     var site;
     var options = this.options({
-      config: 'acetate.conf.js',
-      src: 'src',
-      dest: 'build',
-      root: process.cwd(),
       keepalive: false,
-      server: false,
-      watcher: false,
-      port: 3000,
-      host: 'localhost',
-      findPort: true,
       open: false,
-      clean: false,
-      log: 'info',
-      args: false
+      args: {}
     });
 
-    function createSite () {
+    function run () {
       site = acetate(options);
+
+      // whenever we log anything spit out a header
+      // cleaner output when using grunt watch
       site.on('log', function (e) {
         if (e.show && logHeader) {
           logHeader = false;
@@ -46,8 +38,11 @@ module.exports = function (grunt) {
       });
     }
 
-    createSite();
+    // create the site
+    run();
 
+    // whenever grunt watch activates it spits out a header
+    // we can spit out a header next time we log anything
     grunt.event.on('watch', function () {
       grunt.log.writeln();
       logHeader = true;
@@ -74,11 +69,12 @@ module.exports = function (grunt) {
         ignoreInitial: true
       }).on('change', function () {
         site.log.info('watcher', 'config file changed, rebuilding site');
-        site.watcher.stop();
-        site.server.stop();
+        site.stopWatcher.stop();
+        site.stopServer.stop();
         site.removeAllListeners('log');
 
-        createSite();
+        // recreate the site
+        run();
       });
     }
   });
