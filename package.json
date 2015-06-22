@@ -1,7 +1,7 @@
 {
   "name": "grunt-acetate",
   "description": "Grunt plugin for the Acetate.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "Patrick Arlt",
     "email": "patrick.arlt@gmail.com"
@@ -9,10 +9,7 @@
   "bugs": {
     "url": "https://github.com/patricklocal/grunt-acetate/issues"
   },
-  "dependencies": {
-    "chokidar": "~1.0.0",
-    "opener": "^1.4.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "gh-release": "^1.1.7",
     "grunt": "~0.4.5",
@@ -26,7 +23,7 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "acetate": "~0.2.0",
+    "acetate": "~0.3.0",
     "grunt": "~0.4.5"
   },
   "repository": {

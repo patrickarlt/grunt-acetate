@@ -9,9 +9,6 @@
 'use strict';
 
 var acetate = require('acetate');
-var path = require('path');
-var chokidar = require('chokidar');
-var opener = require('opener');
 
 module.exports = function (grunt) {
   grunt.registerMultiTask('acetate', 'Grunt plugin for Acetate.', function () {
@@ -21,25 +18,25 @@ module.exports = function (grunt) {
     var site;
     var options = this.options({
       keepalive: false,
-      open: false,
       args: {}
     });
 
-    function run () {
-      site = acetate(options);
-
-      // whenever we log anything spit out a header
-      // cleaner output when using grunt watch
-      site.on('log', function (e) {
-        if (e.show && logHeader) {
-          logHeader = false;
-          grunt.log.header('Task "acetate:' + target + '" running');
-        }
-      });
+    if (!options.mode) {
+      grunt.fatal('no `mode` specificed in Acetate options.');
     }
 
-    // create the site
-    run();
+    site = acetate(options);
+
+    // whenever we log anything spit out a header
+    // cleaner output when using grunt watch
+    function printLogHeader (e) {
+      if (e.show && logHeader) {
+        logHeader = false;
+        grunt.log.header('Task "acetate:' + target + '" running');
+      }
+    }
+
+    site.on('log', printLogHeader);
 
     // whenever grunt watch activates it spits out a header
     // we can spit out a header next time we log anything
@@ -48,33 +45,32 @@ module.exports = function (grunt) {
       logHeader = true;
     });
 
-    // if building end the task once we are done
-    if (!options.keepalive) {
+    // rebind the log header whenever we restart Acetate
+    site.on('restart', function (newSite) {
+      newSite.on('log', printLogHeader);
+      site = newSite;
+    });
+
+    // if building end the task once we are done, unless keepalive is true
+    if (options.mode === 'build' && !options.keepalive) {
       site.once('build', function (e) {
         done();
       });
     }
 
-    // if serving open the site once we are done building
-    if (options.server && options.open) {
-      site.once('server:start', function (e) {
-        site.log.success('server', 'opening %s:%s', e.host, e.port);
-        opener('http://' + e.host + ':' + e.port);
+    // if serving end the task as soon as the server starts, unless keepalive is true
+    if (options.mode === 'watch' && !options.keepalive) {
+      site.once('watcher:ready', function () {
+        logHeader = true;
+        done();
       });
     }
 
-    // if watching or serving watch the config file and rebuild the whole site
-    if (options.server || options.watcher) {
-      chokidar.watch(path.join(options.root, options.config), {
-        ignoreInitial: true
-      }).on('change', function () {
-        site.log.info('watcher', 'config file changed, rebuilding site');
-        site.stopWatcher.stop();
-        site.stopServer.stop();
-        site.removeAllListeners('log');
-
-        // recreate the site
-        run();
+    // if serving end the task as soon as the server starts, unless keepalive is true
+    if (options.mode === 'server' && !options.keepalive) {
+      site.once('server:ready', function () {
+        logHeader = true;
+        done();
       });
     }
   });

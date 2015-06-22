@@ -26,7 +26,9 @@ In your project's Gruntfile, add a section named `acetate` to the data object pa
 grunt.initConfig({
   acetate: {
     build: {
-      config: 'acetate.conf.js'
+      options: {
+        mode: 'build'
+      }
     },
   },
 });
@@ -34,72 +36,108 @@ grunt.initConfig({
 
 ### Options
 
-@TODO
+| Option      | Default        | Description |
+| ----------  | -------------- | ----------- |
+| `config`    | `'acetate.conf.js'`    | The name of your configuration file.
+| `root`    | `process.cwd()`    | The root directory where you are working. This shoudl contain your `src` and `dest` folders.
+| `src`    | `'src'`    | The folder where pages are located in
+| `dest`    | `'build'`    | The folder where pages will be built.
+| `mode` | `build` | The task that Acetate will run. Should be one of `server`, `watch` or `build`.
+| `port`      | `8000`         | Integer. The port on which the webserver will respond.
+| `host`      | `'localhost'`  | The hostname to server the website on.
+| `log`       | `'info'`       | Logging level to use. Should be one of `debug`, `verbose`, `info`, `success`, `warn`, `error`, `silent`.
+| `args` | `{}` | Any additonal arguments you want to be available under `acetate.args` in your config file.
 
 ### Usage Examples
 
-#### Simple
+#### Simple Build
 
-A simple example that will build your entire project on `grunt acetate`.
+A simple example that will build your entire project.
 
 ```js
 grunt.initConfig({
   acetate: {
     build: {
-      config: 'acetate.conf.js'
+      options: {
+        mode: 'build'
+      }
     },
   }
 });
 ```
 
-#### Rebuild Project When Files Change
+#### Acetate Server + Grunt Watch
 
-Integrate with the grunt-contrib-watch plugin to watch files and rebuild the whole Acetate project when files change.
+It is recommened that you use Acetate's built in server for development since it automatically enables both live reload when pages change and faster startup and build speeds. Run the `watch` task after Acetate to keep the task alive indefinitly.
 
 ```js
 grunt.initConfig({
   acetate: {
-    build: {
-      config: 'acetate.conf.js'
+    dev: {
+      options: {
+        mode: 'server'
+      }
     },
   },
   watch: {
-    acetate: {
-      files: ['src/**/*'],
-      tasks: ['acetate:build'],
-    }
+    ...
   },
 });
+
+grunt.registerTask('default', ['acetate:dev', 'watch']);
 ```
 
-#### Watching and Rebuilding Single Files
+#### Acetate Watch + Grunt Watch
 
-This example shows using the Acetate watcher with `grunt-concurrent`. This example is more robust and will only rebuild the files that have changed and is more efficent for development.
+If you prefer to user your own server to serve files built by Acetate insteed of the built-in Acetate server you can use the built-in file watcher for Acetate.
 
 ```js
 grunt.initConfig({
   acetate: {
-    build: {
-      config: 'acetate.conf.js'
+    dev: {
+      options: {
+        mode: 'watch'
+      }
     },
-    watch: {
-      config: 'acetate.conf.js',
-      watch: true
-    }
   },
-  concurrent: {
-    dev: ['acetate:watch'],
+  watch: {
+    ...
+  },
+  connect: {
+    ...
   }
 });
+
+grunt.registerTask('default', ['acetate:dev', 'connect', 'watch']);
 ```
 
-#### Overriding Config Options
+#### Acetate Watch + Grunt Concurrent
 
-@TODO
+If you are using [grunt-concurrent](https://github.com/sindresorhus/grunt-concurrent) to run your tasks in parrallel with either the built-in Acetate server or watcher make sure you specify the `keepalive` option.
 
-#### Passing Arguments
+```js
+grunt.initConfig({
+  acetate: {
+    watch: {
+      options: {
+        mode: 'watch',
+        keepalive: true
+      }
+    }
+  },
+  watch: {
+    ...
+  },
+  connect: {
+    ...
+  },
+  concurrent: {
+    dev: ['acetate:watch', 'connect', 'watch'],
+  }
+});
 
-@TODO
+grunt.registerTask('default', ['concurrent:dev']);
+```
 
 ## Contributing
 
