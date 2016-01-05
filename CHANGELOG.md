@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.0] - 2016-01-05
+
+- **BREAKING** [acetate@0.4.0](https://github.com/patrickarlt/acetate/releases/tag/v0.4.0) is now required.
+
 ## [0.3.0] - 2015-06-21
 
 - **BREAKING** [acetate@0.3.0](https://github.com/patrickarlt/acetate/releases/tag/v0.3.0) is now required.
