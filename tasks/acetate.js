@@ -8,14 +8,16 @@
 
 'use strict';
 
-var acetate = require('acetate');
+var Acetate = require('acetate');
+var server = require('acetate/lib/modes/server.js');
+var watcher = require('acetate/lib/modes/watcher.js');
+var builder = require('acetate/lib/modes/builder.js');
 
 module.exports = function (grunt) {
   grunt.registerMultiTask('acetate', 'Grunt plugin for Acetate.', function () {
     var done = this.async();
     var target = this.target;
     var logHeader = false;
-    var site;
     var options = this.options({
       keepalive: false,
       args: {}
@@ -25,7 +27,7 @@ module.exports = function (grunt) {
       grunt.fatal('no `mode` specificed in Acetate options.');
     }
 
-    site = acetate(options);
+    var acetate = new Acetate(options);
 
     // whenever we log anything spit out a header
     // cleaner output when using grunt watch
@@ -36,7 +38,7 @@ module.exports = function (grunt) {
       }
     }
 
-    site.on('log', printLogHeader);
+    acetate.on('log', printLogHeader);
 
     // whenever grunt watch activates it spits out a header
     // we can spit out a header next time we log anything
@@ -46,31 +48,36 @@ module.exports = function (grunt) {
     });
 
     // rebind the log header whenever we restart Acetate
-    site.on('restart', function (newSite) {
-      newSite.on('log', printLogHeader);
-      site = newSite;
+    acetate.on('config:loaded', function () {
+      acetate.on('log', printLogHeader);
     });
 
     // if building end the task once we are done, unless keepalive is true
-    if (options.mode === 'build' && !options.keepalive) {
-      site.once('build', function (e) {
-        done();
+    if (options.mode === 'build') {
+      builder(acetate).then(done).catch(done);
+    }
+
+    // if watching end the task as soon as the watcher starts, unless keepalive is true
+    if (options.mode === 'watch') {
+      watcher(acetate);
+
+      acetate.once('watcher:ready', function () {
+        logHeader = true;
+        if (!options.keepalive) {
+          done();
+        }
       });
     }
 
     // if serving end the task as soon as the server starts, unless keepalive is true
-    if (options.mode === 'watch' && !options.keepalive) {
-      site.once('watcher:ready', function () {
-        logHeader = true;
-        done();
-      });
-    }
+    if (options.mode === 'server') {
+      server(acetate, options.server);
 
-    // if serving end the task as soon as the server starts, unless keepalive is true
-    if (options.mode === 'server' && !options.keepalive) {
-      site.once('server:ready', function () {
+      acetate.once('watcher:ready', function () {
         logHeader = true;
-        done();
+        if (!options.keepalive) {
+          done();
+        }
       });
     }
   });
