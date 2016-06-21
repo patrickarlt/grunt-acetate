@@ -58,7 +58,7 @@ module.exports = function (grunt) {
     }
 
     // if watching end the task as soon as the watcher starts, unless keepalive is true
-    if (options.mode === 'watch') {
+    if (options.mode === 'watcher') {
       watcher(acetate);
 
       acetate.once('watcher:ready', function () {
