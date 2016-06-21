@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.0] - 2016-04-21
+
+- **BREAKING** [acetate@1.0.0](https://github.com/patrickarlt/acetate/releases/tag/v1.0.0) is now required.
+
 ## [0.4.0] - 2016-01-05
 
 - **BREAKING** [acetate@0.4.0](https://github.com/patrickarlt/acetate/releases/tag/v0.4.0) is now required.
@@ -32,3 +36,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 [0.1.0]: https://github.com/patrickarlt/grunt-acetate/compare/d1dfaaf076e60c8498e282ddb009a5bf401d5593...v0.1.0
 [0.2.0]: https://github.com/patrickarlt/grunt-acetate/compare/v0.1.0...v0.2.0
+[0.3.0]: https://github.com/patrickarlt/grunt-acetate/compare/v0.2.0...v0.3.0
+[0.4.0]: https://github.com/patrickarlt/grunt-acetate/compare/v0.3.0...v0.4.0
+[1.0.0]: https://github.com/patrickarlt/grunt-acetate/compare/v0.4.0...v1.0.0
