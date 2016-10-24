@@ -24,8 +24,8 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "acetate": "~1.0.0",
-    "grunt": "~1.0.0"
+    "acetate": "^1.0.0",
+    "grunt": "^1.0.0"
   },
   "engines": {
     "node": ">=6.0.0"
