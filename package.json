@@ -1,7 +1,7 @@
 {
   "name": "grunt-acetate",
   "description": "Grunt plugin for the Acetate.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": {
     "name": "Patrick Arlt",
     "email": "patrick.arlt@gmail.com"
@@ -24,7 +24,7 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "acetate": "^1.0.0",
+    "acetate": "~1.0.0",
     "grunt": "^1.0.0"
   },
   "engines": {
